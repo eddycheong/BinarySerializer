@@ -80,7 +80,18 @@ namespace BinarySerialization.Graph.TypeGraph
 
             FieldOrderAttribute fieldOrderAttribute = attributes.OfType<FieldOrderAttribute>().SingleOrDefault();
             if (fieldOrderAttribute != null)
+            {
                 _order = fieldOrderAttribute.Order;
+                if (fieldOrderAttribute.ConverterType != null)
+                {
+                    var typeConverter = (IValueConverter)Activator.CreateInstance(fieldOrderAttribute.ConverterType);
+                    var originalValueGetter = ValueGetter;
+                    var originalValueSetter = ValueSetter;
+                    ValueGetter = declaringValue => typeConverter.Convert(originalValueGetter(declaringValue), fieldOrderAttribute.ConverterParameter, null);
+                    ValueSetter = (obj, value) => originalValueSetter(obj, typeConverter.ConvertBack(value, fieldOrderAttribute.ConverterParameter, null));
+                }
+            }
+                
 
             SerializeAsAttribute serializeAsAttribute = attributes.OfType<SerializeAsAttribute>().SingleOrDefault();
             if (serializeAsAttribute != null)

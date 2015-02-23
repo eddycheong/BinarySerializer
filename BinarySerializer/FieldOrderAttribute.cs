@@ -6,7 +6,7 @@ namespace BinarySerialization
     /// Provides the <see cref="BinarySerializer"/> with information used to serialize the decorated member.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple=false)]
-    public sealed class FieldOrderAttribute : Attribute
+    public sealed class FieldOrderAttribute : FieldBindingBaseAttribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldOrderAttribute"/> class.

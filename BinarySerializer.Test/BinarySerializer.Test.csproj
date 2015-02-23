@@ -61,7 +61,9 @@
     <Compile Include="Context\Context.cs" />
     <Compile Include="Context\ContextClass.cs" />
     <Compile Include="Context\ContextTests.cs" />
+    <Compile Include="Converters\BitShiftConverter.cs" />
     <Compile Include="Converters\ConverterClass.cs" />
+    <Compile Include="Converters\ConverterClass2.cs" />
     <Compile Include="Converters\ConverterTests.cs" />
     <Compile Include="Converters\TwiceConverter.cs" />
     <Compile Include="Count\BoundCountClass.cs" />

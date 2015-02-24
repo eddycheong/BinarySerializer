@@ -5,13 +5,13 @@ namespace BinarySerialization
     /// <summary>
     /// Used to wrap streams to allow for relative position tracking whether the source stream is seekable or not.
     /// </summary>
-    internal class StreamKeeper : Stream
+    internal class StreamKeeper : BitStreamDecorator
     {
         private readonly Stream _stream;
 
         public long RelativePosition { get; set; }
 
-        public StreamKeeper(Stream stream)
+        public StreamKeeper(Stream stream) : base(stream)
         {
             _stream = stream;
         }

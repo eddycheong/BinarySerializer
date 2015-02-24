@@ -13,7 +13,7 @@ namespace BinarySerialization.Graph.TypeGraph
         public static readonly Dictionary<Type, SerializedType> DefaultSerializedTypes =
             new Dictionary<Type, SerializedType>
             {
-                {typeof (bool), SerializedType.Int1},
+                {typeof (bool), SerializedType.UInt1},
                 {typeof (sbyte), SerializedType.Int1},
                 {typeof (byte), SerializedType.UInt1},
                 {typeof (char), SerializedType.UInt2},
@@ -33,6 +33,7 @@ namespace BinarySerialization.Graph.TypeGraph
         private readonly SerializedType? _serializedType;
         private readonly Type _type;
         private readonly Type _underlyingType;
+        private BitSizeAttribute _bitSizeAttribute;
 
         protected TypeNode(TypeNode parent) : base(parent)
         {
@@ -179,6 +180,8 @@ namespace BinarySerialization.Graph.TypeGraph
                 ItemSerializeUntilBinding = new Binding(ItemSerializeUntilAttribute,
                     GetBindingLevel(ItemSerializeUntilAttribute.Binding));
             }
+
+            BitSizeAttribute = attributes.OfType<BitSizeAttribute>().SingleOrDefault();
         }
 
 
@@ -240,6 +243,12 @@ namespace BinarySerialization.Graph.TypeGraph
         public int? Order
         {
             get { return _order ?? int.MaxValue; }
+        }
+
+        public BitSizeAttribute BitSizeAttribute
+        {
+            get { return _bitSizeAttribute; }
+            set { _bitSizeAttribute = value; }
         }
 
         public SerializedType GetSerializedType(Type referenceType = null)

@@ -23,3 +23,4 @@ namespace BinarySerialization
         public int Order { get; set; }
     }
 }
+

@@ -127,7 +127,11 @@ namespace BinarySerialization
             serializer.Context = context;
             serializer.Bind();
 
-            serializer.Serialize(stream, _eventShuttle);
+            var wrappedStream = new BitStreamDecorator(stream);
+
+            serializer.Serialize(wrappedStream, _eventShuttle);
+
+            wrappedStream.Flush();
         }
 
         /// <summary>

@@ -9,12 +9,17 @@ namespace BinarySerialization
     /// </summary>
     public class EndianAwareBinaryReader : BinaryReader
     {
+        private readonly BitStreamDecorator _input;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EndianAwareBinaryReader"/> class based on the specified
         /// stream and using UTF-8 encoding.
         /// </summary>
         /// <param name="input">The input stream.</param>
-        public EndianAwareBinaryReader(Stream input) : base(input) { }
+        public EndianAwareBinaryReader(BitStreamDecorator input) : base(input)
+        {
+            _input = input;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EndianAwareBinaryReader"/> class based on the specified 
@@ -22,7 +27,10 @@ namespace BinarySerialization
         /// </summary>
         /// <param name="input">The input stream.</param>
         /// <param name="encoding">The character encoding to use.</param>
-        public EndianAwareBinaryReader(Stream input, Encoding encoding) : base(input, encoding) { }
+        public EndianAwareBinaryReader(BitStreamDecorator input, Encoding encoding) : base(input, encoding)
+        {
+            _input = input;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EndianAwareBinaryReader"/> class based on the specified 
@@ -31,8 +39,9 @@ namespace BinarySerialization
         /// <param name="input">The input stream.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="endianness">The byte ordering to use.</param>
-        public EndianAwareBinaryReader(Stream input, Encoding encoding, Endianness endianness) : base(input, encoding) 
+        public EndianAwareBinaryReader(BitStreamDecorator input, Encoding encoding, Endianness endianness) : base(input, encoding)
         {
+            _input = input;
             Endianness = endianness;
         }
 
@@ -42,8 +51,9 @@ namespace BinarySerialization
         /// </summary>
         /// <param name="input">The input stream.</param>
         /// <param name="endianness">The byte ordering to use.</param>
-        public EndianAwareBinaryReader(Stream input, Endianness endianness) : base(input)
+        public EndianAwareBinaryReader(BitStreamDecorator input, Endianness endianness) : base(input)
         {
+            _input = input;
             Endianness = endianness;
         }
 
@@ -51,6 +61,11 @@ namespace BinarySerialization
         /// The byte ordering to use.
         /// </summary>
         public Endianness Endianness { get; set; }
+
+        public byte ReadByte(byte bitSize)
+        {
+            return _input.ReadBits(bitSize);
+        }
 
         public override short ReadInt16()
         {

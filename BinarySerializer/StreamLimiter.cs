@@ -3,7 +3,7 @@ using System.IO;
 
 namespace BinarySerialization
 {
-    internal class StreamLimiter : Stream
+    internal class StreamLimiter : BitStreamDecorator
     {
         private readonly bool _canSeek;
         private readonly long _length;
@@ -11,7 +11,7 @@ namespace BinarySerialization
 
         private long _position;
 
-        public StreamLimiter(Stream source, long maxLength = long.MaxValue)
+        public StreamLimiter(Stream source, long maxLength = long.MaxValue) : base(source)
         {
             if (source == null)
                 throw new ArgumentNullException("source");

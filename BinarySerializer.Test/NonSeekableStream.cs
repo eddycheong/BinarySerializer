@@ -21,7 +21,10 @@ namespace BinarySerializer.Test
 
         public override void Flush()
         {
-            _stream.Flush();
+            if (_stream != null)
+            {
+                _stream.Flush();    
+            }
         }
 
         public override long Seek(long offset, SeekOrigin origin)

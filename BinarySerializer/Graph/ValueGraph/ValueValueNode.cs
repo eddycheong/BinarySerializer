@@ -59,12 +59,12 @@ namespace BinarySerialization.Graph.ValueGraph
             }
         }
 
-        protected override void SerializeOverride(Stream stream, EventShuttle eventShuttle)
+        protected override void SerializeOverride(BitStreamDecorator stream, EventShuttle eventShuttle)
         {
             Serialize(stream, BoundValue, TypeNode.GetSerializedType());
         }
 
-        public void Serialize(Stream stream, object value, SerializedType serializedType, int? length = null)
+        public void Serialize(BitStreamDecorator stream, object value, SerializedType serializedType, int? length = null)
         {
             var writer = new EndianAwareBinaryWriter(stream, Endianness);
             Serialize(writer, value, serializedType, length);
@@ -82,7 +82,7 @@ namespace BinarySerialization.Graph.ValueGraph
                     writer.Write(Convert.ToSByte(value));
                     break;
                 case SerializedType.UInt1:
-                    writer.Write(Convert.ToByte(value));
+                    writer.Write(Convert.ToByte(value), GetBitSize());
                     break;
                 case SerializedType.Int2:
                     writer.Write(Convert.ToInt16(value));
@@ -157,6 +157,12 @@ namespace BinarySerialization.Graph.ValueGraph
             }
         }
 
+        private byte GetBitSize()
+        {
+            var bitSize = TypeNode.BitSizeAttribute != null ? TypeNode.BitSizeAttribute.Size : 0;
+            return (byte)bitSize;
+        }
+
         public override void DeserializeOverride(StreamLimiter stream, EventShuttle eventShuttle)
         {
             object value = Deserialize(stream, TypeNode.GetSerializedType());
@@ -210,7 +216,7 @@ namespace BinarySerialization.Graph.ValueGraph
                     value = reader.ReadSByte();
                     break;
                 case SerializedType.UInt1:
-                    value = reader.ReadByte();
+                    value = reader.ReadByte(GetBitSize());
                     break;
                 case SerializedType.Int2:
                     value = reader.ReadInt16();
@@ -322,6 +328,7 @@ namespace BinarySerialization.Graph.ValueGraph
         {
             if (TypeNode.IsNullableType) return 0;
             if (TypeNode.SerializeWhenBindings != null) return 0;
+            if (TypeNode.BitSizeAttribute != null) return 0;
             
             switch (TypeNode.GetSerializedType())
             {

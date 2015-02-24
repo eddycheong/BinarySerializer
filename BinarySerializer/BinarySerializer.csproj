@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindingMode.cs" />
+    <Compile Include="BitSizeAttribute.cs" />
     <Compile Include="Graph\Node.cs" />
     <Compile Include="Graph\TypeGraph\ArrayTypeNode.cs" />
     <Compile Include="Graph\TypeGraph\CollectionTypeNode.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Graph\TypeGraph\ObjectTypeNode.cs" />
     <Compile Include="Graph\TypeGraph\RootTypeNode.cs" />
     <Compile Include="StreamKeeper.cs" />
+    <Compile Include="BitStreamDecorator.cs" />
     <Compile Include="StreamLimiter.cs" />
     <Compile Include="StreamResetter.cs" />
     <Compile Include="SubtypeAttribute.cs" />

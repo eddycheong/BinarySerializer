@@ -10,7 +10,7 @@ namespace BinarySerialization.Graph.ValueGraph
         {
         }
 
-        protected override void PrimitiveCollectionSerializeOverride(Stream stream)
+        protected override void PrimitiveCollectionSerializeOverride(BitStreamDecorator stream)
         {
             var typeNode = (ArrayTypeNode)TypeNode;
             var dummyChild = (ValueValueNode) typeNode.Child.CreateSerializer(this);

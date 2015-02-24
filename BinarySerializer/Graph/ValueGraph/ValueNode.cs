@@ -203,6 +203,11 @@ namespace BinarySerialization.Graph.ValueGraph
             var parent = (ValueNode) Parent;
             return new BinarySerializationContext(parent.Value, parent.TypeNode.Type, parent.CreateSerializationContext());
         }
+        
+        public virtual int GetFixedSize()
+        {
+            return 0;
+        }
 
         protected virtual long MeasureOverride()
         {

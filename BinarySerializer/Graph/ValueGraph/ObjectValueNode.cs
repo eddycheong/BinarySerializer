@@ -115,15 +115,26 @@ namespace BinarySerialization.Graph.ValueGraph
 
             var context = CreateSerializationContext();
 
-            foreach (var child in GetSerializableChildren())
+            var serializableChildren = GetSerializableChildren().ToArray();
+
+            var fixedSizeRemaining = serializableChildren.Sum(node => node.GetFixedSize());
+
+            foreach (var child in serializableChildren)
             {
                 if(eventShuttle != null)
                     eventShuttle.OnMemberDeserializing(this, child.Name, context);
 
-                if (ShouldTerminate(stream))
+                fixedSizeRemaining -= child.GetFixedSize();
+                var limitedStream = stream;
+                if (child.TypeNode.FieldOffsetBinding == null && fixedSizeRemaining > 0)
+                {
+                    limitedStream = new StreamLimiter(stream, stream.Remainder - fixedSizeRemaining);
+                }
+
+                if (ShouldTerminate(limitedStream))
                     break;
 
-                child.Deserialize(stream, eventShuttle);
+                child.Deserialize(limitedStream, eventShuttle);
 
                 if(eventShuttle != null)
                     eventShuttle.OnMemberDeserialized(this, child.Name, child.Value, context);

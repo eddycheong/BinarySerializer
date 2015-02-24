@@ -190,6 +190,11 @@ namespace BinarySerialization.Graph.TypeGraph
             }
         }
 
+        public bool IsNullableType
+        {
+            get { return _type.IsGenericType && _type.GetGenericTypeDefinition() == typeof (Nullable<>); }
+        }
+
         public Action<object, object> ValueSetter { get; private set; }
 
         public Func<object, object> ValueGetter { get; private set; }

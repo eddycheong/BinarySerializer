@@ -6,7 +6,7 @@ namespace BinarySerializer.Test
 {
     public abstract class TestBase
     {
-        private static readonly BinarySerialization.BinarySerializer Serializer = new BinarySerialization.BinarySerializer();
+        protected static readonly BinarySerialization.BinarySerializer Serializer = new BinarySerialization.BinarySerializer();
 
         protected static readonly string[] TestSequence = { "a", "b", "c" };
 

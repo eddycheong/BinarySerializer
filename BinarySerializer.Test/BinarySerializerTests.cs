@@ -56,6 +56,7 @@ namespace BinarySerializer.Test
                         },
                     DoubleField = 33.33333333,
                     OtherStuff = new List<string> {"apple", "pear", "banana"},
+                    OtherStuffCount = 3,
                     Shape = CerealShape.Circular,
                     DefinitelyNotTheShape = CerealShape.Square,
                     DontSerializeMe = "bro",

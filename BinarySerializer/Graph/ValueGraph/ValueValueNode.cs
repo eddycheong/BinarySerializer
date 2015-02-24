@@ -317,5 +317,57 @@ namespace BinarySerialization.Graph.ValueGraph
 
             return base.ToString();
         }
+
+        public override int GetFixedSize()
+        {
+            if (TypeNode.IsNullableType) return 0;
+            if (TypeNode.SerializeWhenBindings != null) return 0;
+            
+            switch (TypeNode.GetSerializedType())
+            {
+                case SerializedType.Int1:
+                case SerializedType.UInt1:
+                    return 1;
+                case SerializedType.Int2:
+                case SerializedType.UInt2:
+                    return 2;
+                case SerializedType.Int4:
+                case SerializedType.UInt4:
+                case SerializedType.Float4:
+                    return 4;
+                case SerializedType.Int8:
+                case SerializedType.UInt8:
+                case SerializedType.Float8:
+                    return 8;
+                case SerializedType.ByteArray:
+                case SerializedType.SizedString:
+                    var typeParent = TypeNode.Parent as TypeNode;
+                    return GetConstantLength(typeParent);
+
+                default:
+                    return 0;
+            }
+        }
+
+        private int GetConstantLength(TypeNode typeParent)
+        {
+            var effectiveLength = 0;
+            if (TypeNode.FieldLengthBinding != null && TypeNode.FieldLengthBinding.IsConst)
+            {
+                object lengthValue = TypeNode.FieldLengthBinding.GetValue(this);
+                effectiveLength = Convert.ToInt32(lengthValue);
+            }
+            else if (typeParent != null && typeParent.ItemLengthBinding != null && typeParent.ItemLengthBinding.IsConst)
+            {
+                object lengthValue = typeParent.ItemLengthBinding.GetValue((ValueNode) Parent);
+                effectiveLength = Convert.ToInt32(lengthValue);
+            }
+            else if (TypeNode.FieldCountBinding != null && TypeNode.FieldCountBinding.IsConst)
+            {
+                object countValue = TypeNode.FieldCountBinding.GetValue(this);
+                effectiveLength = Convert.ToInt32(countValue);
+            }
+            return effectiveLength;
+        }
     }
 }

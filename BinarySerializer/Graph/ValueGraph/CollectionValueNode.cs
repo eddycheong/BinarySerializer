@@ -11,7 +11,7 @@ namespace BinarySerialization.Graph.ValueGraph
         {
         }
 
-        protected override void SerializeOverride(BitStreamDecorator stream, EventShuttle eventShuttle)
+        protected override void SerializeOverride(IBitStream stream, EventShuttle eventShuttle)
         {
             var serializableChildren = GetSerializableChildren();
 
@@ -89,15 +89,14 @@ namespace BinarySerialization.Graph.ValueGraph
 
         protected override long MeasureItemOverride()
         {
-            var nullStream = new NullStream();
-            var streamKeeper = new StreamKeeper(nullStream);
+            var streamKeeper = new StreamKeeper(new BitStream(new NullStream()));
 
             var serializableChildren = GetSerializableChildren();
 
             var childLengths = serializableChildren.Select(child =>
             {
                 streamKeeper.RelativePosition = 0;
-                child.Serialize(streamKeeper, null);
+                child.Serialize(streamKeeper.Stream, null);
                 return streamKeeper.RelativePosition;
             }).ToList();
 

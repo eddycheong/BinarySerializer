@@ -65,6 +65,7 @@
     <Compile Include="Graph\ValueGraph\PrimitveArrayValueNode.cs" />
     <Compile Include="Graph\ValueGraph\StreamValueNode.cs" />
     <Compile Include="Graph\ValueGraph\UnknownValueNode.cs" />
+    <Compile Include="IBitStream.cs" />
     <Compile Include="SerializeAsAttribute.cs" />
     <Compile Include="BinarySerializer.cs" />
     <Compile Include="BindingException.cs" />
@@ -80,7 +81,7 @@
     <Compile Include="Graph\TypeGraph\ObjectTypeNode.cs" />
     <Compile Include="Graph\TypeGraph\RootTypeNode.cs" />
     <Compile Include="StreamKeeper.cs" />
-    <Compile Include="BitStreamDecorator.cs" />
+    <Compile Include="BitStream.cs" />
     <Compile Include="StreamLimiter.cs" />
     <Compile Include="StreamResetter.cs" />
     <Compile Include="SubtypeAttribute.cs" />

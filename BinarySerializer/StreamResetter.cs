@@ -6,9 +6,9 @@ namespace BinarySerialization
     internal class StreamResetter : IDisposable
     {
         private long? _position;
-        private readonly Stream _stream;
+        private readonly IBitStream _stream;
 
-        public StreamResetter(Stream stream, bool resetOnDispose = true)
+        public StreamResetter(IBitStream stream, bool resetOnDispose = true)
         {
             if (!resetOnDispose)
                 return;

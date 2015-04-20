@@ -9,14 +9,14 @@ namespace BinarySerialization
     /// </summary>
     public class EndianAwareBinaryReader : BinaryReader
     {
-        private readonly BitStreamDecorator _input;
+        private readonly IBitStream _input;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EndianAwareBinaryReader"/> class based on the specified
         /// stream and using UTF-8 encoding.
         /// </summary>
         /// <param name="input">The input stream.</param>
-        public EndianAwareBinaryReader(BitStreamDecorator input) : base(input)
+        public EndianAwareBinaryReader(IBitStream input) : base(input.BaseStream)
         {
             _input = input;
         }
@@ -27,7 +27,7 @@ namespace BinarySerialization
         /// </summary>
         /// <param name="input">The input stream.</param>
         /// <param name="encoding">The character encoding to use.</param>
-        public EndianAwareBinaryReader(BitStreamDecorator input, Encoding encoding) : base(input, encoding)
+        public EndianAwareBinaryReader(IBitStream input, Encoding encoding) : base(input.BaseStream, encoding)
         {
             _input = input;
         }
@@ -39,7 +39,7 @@ namespace BinarySerialization
         /// <param name="input">The input stream.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="endianness">The byte ordering to use.</param>
-        public EndianAwareBinaryReader(BitStreamDecorator input, Encoding encoding, Endianness endianness) : base(input, encoding)
+        public EndianAwareBinaryReader(IBitStream input, Encoding encoding, Endianness endianness) : base(input.BaseStream, encoding)
         {
             _input = input;
             Endianness = endianness;
@@ -51,7 +51,7 @@ namespace BinarySerialization
         /// </summary>
         /// <param name="input">The input stream.</param>
         /// <param name="endianness">The byte ordering to use.</param>
-        public EndianAwareBinaryReader(BitStreamDecorator input, Endianness endianness) : base(input)
+        public EndianAwareBinaryReader(IBitStream input, Endianness endianness) : base(input.BaseStream)
         {
             _input = input;
             Endianness = endianness;

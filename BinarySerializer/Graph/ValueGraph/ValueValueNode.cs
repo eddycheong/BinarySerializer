@@ -27,6 +27,8 @@ namespace BinarySerialization.Graph.ValueGraph
                 {typeof (string), Convert.ToString}
             };
 
+        private long _remainder;
+
         public ValueValueNode(Node parent, string name, TypeNode typeNode)
             : base(parent, name, typeNode)
         {
@@ -59,12 +61,12 @@ namespace BinarySerialization.Graph.ValueGraph
             }
         }
 
-        protected override void SerializeOverride(BitStreamDecorator stream, EventShuttle eventShuttle)
+        protected override void SerializeOverride(IBitStream stream, EventShuttle eventShuttle)
         {
             Serialize(stream, BoundValue, TypeNode.GetSerializedType());
         }
 
-        public void Serialize(BitStreamDecorator stream, object value, SerializedType serializedType, int? length = null)
+        public void Serialize(IBitStream stream, object value, SerializedType serializedType, int? length = null)
         {
             var writer = new EndianAwareBinaryWriter(stream, Endianness);
             Serialize(writer, value, serializedType, length);
@@ -165,11 +167,14 @@ namespace BinarySerialization.Graph.ValueGraph
 
         public override void DeserializeOverride(StreamLimiter stream, EventShuttle eventShuttle)
         {
+            // try to get bounded length from limiter
+            _remainder = stream.Remainder;
+
             object value = Deserialize(stream, TypeNode.GetSerializedType());
             Value = ConvertToFieldType(value);
         }
 
-        public object Deserialize(StreamLimiter stream, SerializedType serializedType, int? length = null)
+        protected object Deserialize(IBitStream stream, SerializedType serializedType, int? length = null)
         {
             var reader = new EndianAwareBinaryReader(stream, Endianness);
             return Deserialize(reader, serializedType, length);
@@ -200,12 +205,9 @@ namespace BinarySerialization.Graph.ValueGraph
             }
             else if (serializedType == SerializedType.ByteArray || serializedType == SerializedType.SizedString)
             {
-                // try to get bounded length from limiter
-                var baseStream = (StreamLimiter) reader.BaseStream;
-
                 checked
                 {
-                    effectiveLength = (int) (baseStream.Remainder);
+                    effectiveLength = (int)_remainder;    
                 }
             }
 

@@ -2,7 +2,7 @@
 
 namespace BinarySerialization
 {
-    public class BitStreamDecorator : Stream
+    public class BitStream : Stream, IBitStream
     {
         private readonly Stream _source;
         private byte _readBitPosition;
@@ -10,7 +10,7 @@ namespace BinarySerialization
         private byte? _stagedWriteByte;
         private byte _writeBitPosition;
 
-        public BitStreamDecorator(Stream source)
+        public BitStream(Stream source)
         {
             _source = source;
         }
@@ -37,8 +37,18 @@ namespace BinarySerialization
 
         public override long Position
         {
-            get { return _source.Position; }
-            set { _source.Position = value; }
+            get
+            {
+                if (_stagedReadByte.HasValue)
+                {
+                    return _source.Position - 1;
+                }
+                return _source.Position;
+            }
+            set
+            {
+                _source.Position = value;
+            }
         }
 
         public override void Flush()
@@ -120,6 +130,11 @@ namespace BinarySerialization
             }
 
             return value;
+        }
+
+        public Stream BaseStream
+        {
+            get { return _source; }
         }
 
         private void ResetReadBitPosition()

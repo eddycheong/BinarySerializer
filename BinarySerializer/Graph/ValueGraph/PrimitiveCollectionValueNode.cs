@@ -14,7 +14,7 @@ namespace BinarySerialization.Graph.ValueGraph
 
         public override object Value { get; set; }
 
-        protected override void SerializeOverride(BitStreamDecorator stream, EventShuttle eventShuttle)
+        protected override void SerializeOverride(IBitStream stream, EventShuttle eventShuttle)
         {
             PrimitiveCollectionSerializeOverride(stream);
 
@@ -87,7 +87,7 @@ namespace BinarySerialization.Graph.ValueGraph
                 SetCollectionValue(collection[i], i);
         }
 
-        protected abstract void PrimitiveCollectionSerializeOverride(BitStreamDecorator stream);
+        protected abstract void PrimitiveCollectionSerializeOverride(IBitStream stream);
 
         protected abstract object CreateCollection(int size);
 

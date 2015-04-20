@@ -9,14 +9,14 @@ namespace BinarySerialization
     /// </summary>
     public class EndianAwareBinaryWriter : BinaryWriter
     {
-        private readonly BitStreamDecorator _output;
+        private readonly IBitStream _output;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EndianAwareBinaryWriter"/> class based on the specified
         /// stream and using UTF-8 encoding.
         /// </summary>
         /// <param name="output">The output stream.</param>
-        public EndianAwareBinaryWriter(BitStreamDecorator output): base(output)
+        public EndianAwareBinaryWriter(IBitStream output): base(output.BaseStream)
         {
             _output = output;
         }
@@ -27,7 +27,7 @@ namespace BinarySerialization
         /// </summary>
         /// <param name="output">The output stream.</param>
         /// <param name="encoding">The character encoding to use.</param>
-        public EndianAwareBinaryWriter(BitStreamDecorator output, Encoding encoding) : base(output, encoding)
+        public EndianAwareBinaryWriter(IBitStream output, Encoding encoding) : base(output.BaseStream, encoding)
         {
             _output = output;
         }
@@ -39,7 +39,7 @@ namespace BinarySerialization
         /// <param name="output">The output stream.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="endianness">The byte ordering to use.</param>
-        public EndianAwareBinaryWriter(BitStreamDecorator output, Encoding encoding, Endianness endianness) : base(output, encoding)
+        public EndianAwareBinaryWriter(IBitStream output, Encoding encoding, Endianness endianness) : base(output.BaseStream, encoding)
         {
             _output = output;
             Endianness = endianness;
@@ -51,7 +51,7 @@ namespace BinarySerialization
         /// </summary>
         /// <param name="output">The input stream.</param>
         /// <param name="endianness">The byte ordering to use.</param>
-        public EndianAwareBinaryWriter(BitStreamDecorator output, Endianness endianness) : base(output)
+        public EndianAwareBinaryWriter(IBitStream output, Endianness endianness) : base(output.BaseStream)
         {
             _output = output;
             Endianness = endianness;

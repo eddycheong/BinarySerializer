@@ -12,7 +12,7 @@ namespace BinarySerialization.Graph.ValueGraph
 
         public override object Value { get; set; }
 
-        protected override void SerializeOverride(BitStreamDecorator stream, EventShuttle eventShuttle)
+        protected override void SerializeOverride(IBitStream stream, EventShuttle eventShuttle)
         {
             var valueStream = (Stream)Value;
 
@@ -20,15 +20,13 @@ namespace BinarySerialization.Graph.ValueGraph
                 ? new Streamlet(valueStream, valueStream.Position, Convert.ToInt64(TypeNode.FieldLengthBinding.ConstValue))
                 : new Streamlet(valueStream);
 
-            valueStreamlet.CopyTo(stream);
+            valueStreamlet.CopyTo(stream.BaseStream);
         }
 
         public override void DeserializeOverride(StreamLimiter stream, EventShuttle eventShuttle)
         {
             /* This is weird but we need to find the base stream so we can reference it directly */
-            Stream baseStream = stream;
-            while (baseStream is StreamLimiter)
-                baseStream = (baseStream as StreamLimiter).Source;
+            Stream baseStream = stream.BaseStream;
 
             var length = TypeNode.FieldLengthBinding == null
                 ? (long?)null

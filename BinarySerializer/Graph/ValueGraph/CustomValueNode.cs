@@ -27,17 +27,17 @@ namespace BinarySerialization.Graph.ValueGraph
             }
         }
 
-        protected override void SerializeOverride(BitStreamDecorator stream, EventShuttle eventShuttle)
+        protected override void SerializeOverride(IBitStream stream, EventShuttle eventShuttle)
         {
             var serializationContext = CreateSerializationContext();
-            _binarySerializable.Serialize(stream, Endianness, serializationContext);
+            _binarySerializable.Serialize(stream.BaseStream, Endianness, serializationContext);
         }
 
         public override void DeserializeOverride(StreamLimiter stream, EventShuttle eventShuttle)
         {
             var serializationContext = CreateSerializationContext();
             _binarySerializable = (IBinarySerializable)Activator.CreateInstance(TypeNode.Type);
-            _binarySerializable.Deserialize(stream, Endianness, serializationContext);
+            _binarySerializable.Deserialize(stream.BaseStream, Endianness, serializationContext);
         }
     }
 }

@@ -98,7 +98,7 @@ namespace BinarySerialization.Graph.ValueGraph
             return Children.Where(child => child.TypeNode.IgnoreAttribute == null);
         }
 
-        public void Serialize(BitStreamDecorator stream, EventShuttle eventShuttle)
+        public void Serialize(IBitStream stream, EventShuttle eventShuttle)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace BinarySerialization.Graph.ValueGraph
             }
         }
 
-        protected abstract void SerializeOverride(BitStreamDecorator stream, EventShuttle eventShuttle);
+        protected abstract void SerializeOverride(IBitStream stream, EventShuttle eventShuttle);
 
         public void Deserialize(StreamLimiter stream, EventShuttle eventShuttle)
         {
@@ -211,9 +211,8 @@ namespace BinarySerialization.Graph.ValueGraph
 
         protected virtual long MeasureOverride()
         {
-            var nullStream = new NullStream();
-            var streamKeeper = new StreamKeeper(nullStream);
-            Serialize(streamKeeper, null);
+            var streamKeeper = new StreamKeeper(new BitStream(new NullStream()));
+            Serialize(streamKeeper.Stream, null);
             return streamKeeper.RelativePosition;
         }
 

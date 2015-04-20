@@ -44,7 +44,7 @@ namespace BinarySerialization.Graph.ValueGraph
         //    }
         //}
 
-        protected override void SerializeOverride(BitStreamDecorator stream, EventShuttle eventShuttle)
+        protected override void SerializeOverride(IBitStream stream, EventShuttle eventShuttle)
         {
             foreach(var child in Children)
                 child.Serialize(stream, eventShuttle);

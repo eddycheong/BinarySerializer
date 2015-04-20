@@ -3,53 +3,54 @@ using System.IO;
 
 namespace BinarySerialization
 {
-    internal class StreamLimiter : BitStreamDecorator
+    internal class StreamLimiter : IBitStream
     {
         private readonly bool _canSeek;
         private readonly long _length;
+        private readonly IBitStream _sourceStream;
         private readonly long _maxLength;
 
         private long _position;
+        private long _initialPosition;
 
-        public StreamLimiter(Stream source, long maxLength = long.MaxValue) : base(source)
+        public StreamLimiter(IBitStream sourceStream, long maxLength = long.MaxValue)
         {
-            if (source == null)
-                throw new ArgumentNullException("source");
+            if (sourceStream == null)
+                throw new ArgumentNullException("sourceStream");
 
             if (maxLength < 0)
                 throw new ArgumentOutOfRangeException("maxLength", "Cannot be negative.");
 
-            Source = source;
+
+            _sourceStream = sourceStream;
             _maxLength = maxLength;
 
             /* Store for performance */
-            _canSeek = source.CanSeek;
+            _canSeek = sourceStream.CanSeek;
 
             if(_canSeek)
-                _length = source.Length;
+                _length = sourceStream.Length;
+
+            _initialPosition = sourceStream.Position;
         }
 
         /// <summary>
         ///     The underlying source <see cref="Stream" />.
         /// </summary>
-        public Stream Source { get; private set; }
+        public Stream BaseStream {
+            get { return _sourceStream.BaseStream; } }
 
         public bool IsAtLimit
         {
             get { return Position >= MaxLength; }
         }
 
-        public override bool CanRead
-        {
-            get { return Source.CanRead; }
-        }
-
-        public override bool CanSeek
+        public bool CanSeek
         {
             get { return _canSeek; }
         }
 
-        public override bool CanWrite
+        public bool CanWrite
         {
             get { return false; }
         }
@@ -59,12 +60,12 @@ namespace BinarySerialization
             get { return _maxLength; }
         }
 
-        public override long Length
+        public long Length
         {
             get
             {
                 if (!_canSeek)
-                    return Source.Length;
+                    return _sourceStream.Length;
 
                 return _length;
             }
@@ -81,24 +82,24 @@ namespace BinarySerialization
             }
         }
 
-        public override long Position
+        public long Position
         {
-            get { return _position; }
-
+            get
+            {
+                return _sourceStream.Position - _initialPosition;
+            }
             set
             {
-                var delta = value - _position;
-                Source.Position += delta;
-                _position = value;
+                _sourceStream.Position = value + _initialPosition;
             }
         }
 
-        public override void Flush()
+        public void Flush()
         {
-            Source.Flush();
+            _sourceStream.Flush();
         }
 
-        public override long Seek(long offset, SeekOrigin origin)
+        public long Seek(long offset, SeekOrigin origin)
         {
             switch (origin)
             {
@@ -116,12 +117,12 @@ namespace BinarySerialization
             return Position;
         }
 
-        public override void SetLength(long value)
+        public void SetLength(long value)
         {
             throw new NotSupportedException();
         }
 
-        public override int Read(byte[] buffer, int offset, int count)
+/*        public int Read(byte[] buffer, int offset, int count)
         {
             if (count > MaxLength - Position)
             {
@@ -131,15 +132,24 @@ namespace BinarySerialization
             if (count == 0)
                 return 0;
 
-            int read = Source.Read(buffer, offset, count);
+            int read = _sourceStream.Read(buffer, offset, count);
             _position += read;
-
             return read;
-        }
+        }*/
 
-        public override void Write(byte[] buffer, int offset, int count)
+        public void Write(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
+        }
+
+        public void WriteBits(byte value, byte bitSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte ReadBits(byte bitSize)
+        {
+            return _sourceStream.ReadBits(bitSize);
         }
     }
 }

@@ -81,7 +81,7 @@ namespace BinarySerialization.Graph.ValueGraph
             Child.Bind();
         }
 
-        protected override void SerializeOverride(BitStreamDecorator stream, EventShuttle eventShuttle)
+        protected override void SerializeOverride(IBitStream stream, EventShuttle eventShuttle)
         {
             Child.Serialize(stream, eventShuttle);
         }
